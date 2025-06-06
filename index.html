@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculadora Compacta VF = VA(1 + r)ⁿ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&amp;display=swap" rel="stylesheet" />
+  <style>
+    /* Mobile-first base */
+    :root {
+      --color-purple: #6e4aff;
+      --color-teal: #0abb83;
+      --color-cream: #f2e7c0;
+      --color-light-purple: #b9b2ff;
+      --color-light-teal: #aaefd5;
+      --color-dark-indigo: #2e294e;
+      --color-bright-teal: #5ce6b0;
+
+      --color-text-primary: var(--color-dark-indigo);
+      --color-text-secondary: #6b7280;
+      --color-bg: #ffffff;
+
+      --radius: 0.75rem;
+      --shadow: rgba(46, 41, 78, 0.1);
+      --font-family: 'Poppins', sans-serif;
+
+      /* Sizing */
+      --container-max-width: 320px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-family);
+      background: var(--color-bg);
+      color: var(--color-text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    main.container {
+      max-width: var(--container-max-width);
+      width: 100%;
+      background: var(--color-cream);
+      box-shadow: 0 8px 20px var(--shadow);
+      border-radius: var(--radius);
+      padding: 1.5rem 1.8rem 1.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      user-select: none;
+      transition: max-width 0.3s ease;
+    }
+
+    @media (min-width: 400px) {
+      main.container {
+        max-width: 360px;
+        padding: 2rem 2.2rem 2.5rem;
+        gap: 1.5rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      main.container {
+        max-width: 400px;
+        padding: 2.5rem 3rem 3rem;
+        gap: 1.8rem;
+      }
+      h1 {
+        font-size: 2.25rem;
+      }
+      .result-card {
+        font-size: 1.25rem;
+        min-height: 48px;
+      }
+    }
+
+    header.logo-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 0.6rem;
+    }
+
+    header.logo-container img {
+      max-width: 120px;
+      height: auto;
+      user-select: none;
+    }
+
+    h1 {
+      font-weight: 700;
+      font-size: 1.6rem;
+      margin: 0;
+      text-align: center;
+      line-height: 1.2;
+      color: var(--color-purple);
+      user-select: text;
+      transition: font-size 0.3s ease;
+    }
+
+    p.subtitle {
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: var(--color-text-secondary);
+      text-align: center;
+      margin: 0 0 0.35rem 0;
+      user-select: text;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      user-select: text;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 0.25rem;
+      color: var(--color-dark-indigo);
+      transition: font-size 0.3s ease;
+    }
+
+    input[type="number"] {
+      font-size: 0.95rem;
+      padding: 0.45rem 0.75rem;
+      border-radius: var(--radius);
+      border: 1.5px solid var(--color-light-purple);
+      color: var(--color-text-primary);
+      font-family: var(--font-family);
+      outline-offset: 3px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, font-size 0.3s ease;
+      box-shadow: inset 0 1px 4px rgba(110, 74, 255, 0.15);
+      user-select: text;
+    }
+
+    input[type="number"]:focus {
+      border-color: var(--color-purple);
+      box-shadow: 0 0 8px var(--color-purple);
+      outline-color: var(--color-purple);
+    }
+
+    /* Remove spinner */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--color-purple);
+      margin-top: 0.28rem;
+      cursor: pointer;
+      height: 0.3rem;
+      border-radius: 1rem;
+      background: var(--color-light-purple);
+      transition: background-color 0.3s ease;
+    }
+
+    input[type="range"]:focus {
+      outline-offset: 3px;
+      outline-color: var(--color-purple);
+      box-shadow: 0 0 8px var(--color-purple);
+    }
+
+    .range-group {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    .range-group input[type="number"] {
+      width: 4.6rem;
+      text-align: center;
+      padding: 0.3rem 0.65rem;
+      user-select: text;
+      font-size: 0.95rem;
+      transition: font-size 0.3s ease;
+    }
+
+    .result-card {
+      background: var(--color-light-teal);
+      border-radius: var(--radius);
+      padding: 0.9rem 1.1rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--color-purple);
+      text-align: center;
+      user-select: text;
+      box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.05);
+      min-height: 40px;
+      transition: color 0.3s ease, font-size 0.3s ease;
+    }
+
+    .result-details {
+      font-weight: 500;
+      font-size: 0.82rem;
+      color: var(--color-text-secondary);
+      text-align: center;
+      margin-top: -0.9rem;
+      user-select: none;
+      line-height: 1.2;
+      transition: font-size 0.3s ease;
+    }
+
+    .error-message {
+      color: #d33f49;
+      font-weight: 600;
+      font-size: 0.82rem;
+      margin-top: 0.15rem;
+      user-select: none;
+      min-height: 18px;
+      transition: font-size 0.3s ease;
+    }
+
+    button.cta-button {
+      margin-top: 1rem;
+      background: var(--color-teal);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      padding: 0.6rem;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(10, 187, 131, 0.45);
+      transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+      user-select: none;
+    }
+
+    button.cta-button:hover,
+    button.cta-button:focus {
+      background: var(--color-bright-teal);
+      box-shadow: 0 8px 25px rgba(92, 230, 176, 0.7);
+      transform: scale(1.05);
+      outline: none;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container" role="main" aria-label="Calculadora compacta Valor Futuro">
+    <header class="logo-container">
+      <img src="https://kalmy.mx/wp-content/uploads/2023/05/LogoKamlySinFondo.png" alt="Logo Kalmy" width="120" height="auto" />
+    </header>
+
+    <h1>Calculadora VF</h1>
+    <p class="subtitle">Fórmula: VF = VA × (1 + r)ⁿ</p>
+
+    <form id="vf-form" novalidate>
+      <div class="form-group">
+        <label for="va-input">Valor Actual (VA)</label>
+        <input type="number" id="va-input" name="va" placeholder="1000" min="0" step="any" required aria-describedby="va-error" aria-required="true" />
+        <span id="va-error" class="error-message" aria-live="polite"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="r-range">Tasa de interés (r) decimal</label>
+        <div class="range-group">
+          <input type="range" id="r-range" min="0" max="1" step="0.001" value="0.05" aria-label="Tasa de interés rango" />
+          <input type="number" id="r-number" name="r" min="0" max="1" step="0.001" value="0.05" aria-describedby="r-error" required aria-required="true" />
+        </div>
+        <span id="r-error" class="error-message" aria-live="polite"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="n-range">Número de meses (n)</label>
+        <div class="range-group">
+          <input type="range" id="n-range" min="0" max="100" step="1" value="10" aria-label="Número de meses rango" />
+          <input type="number" id="n-number" name="n" min="0" max="100" step="1" value="10" aria-describedby="n-error" required aria-required="true" />
+        </div>
+        <span id="n-error" class="error-message" aria-live="polite"></span>
+      </div>
+    </form>
+
+    <div id="result" class="result-card" aria-live="polite" aria-atomic="true" role="region" aria-label="Valor Futuro calculado">
+      Ingresa valores para ver el resultado...
+    </div>
+    <div class="result-details" aria-hidden="true" id="formula-display"></div>
+
+    <button type="button" class="cta-button" onclick="window.open('https://cotiza.kalmy.mx/', '_blank')"
+      aria-label="Cotiza tu seguro de vida ahorro en Kalmy">
+      Cotiza tu seguro de vida ahorro
+    </button>
+  </main>
+
+  <script src="calculator.js"></script>
+</body>
+
+</html>
